@@ -1,19 +1,26 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import NavBar from './NavBar';
 import PostItem from './PostItem';
 import PostsPage from './PostsPage';
+import PrivateRoutes from './reactRouting/PrivateRoutes';
+import PublicRoutes from './reactRouting/PublicRoutes';
 
-export default function App() {
+export default function App({ usernameSession }) {
+  const [authUser, setAuthUser] = useState(usernameSession);
+  const logoutHandler = () => {
+    setAuthUser(null);
+    axios.get('/api/v1/logout').then(() => {});
+  };
   return (
     <div className="container">
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/posts" element={<PostsPage />} />
-        <Route path="/posts/:id" element={<PostItem />} />
-      </Routes>
+      <NavBar logoutHandler={logoutHandler} />
+      {' '}
+      {/* Раньше был Routing един для всех, тепер он разбит на два, в заисимости от авторизации */}
+      {authUser ? <PrivateRoutes authUser={authUser} setAuthUser={setAuthUser} />
+        : <PublicRoutes authUser={authUser} setAuthUser={setAuthUser} /> }
     </div>
   );
 }
