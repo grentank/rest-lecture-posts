@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function NavBar() {
+export default function NavBar({ logoutHandler }) {
   return (
     <nav className="navbar navbar-expand-lg bg-light">
       <div className="container-fluid">
@@ -13,6 +13,14 @@ export default function NavBar() {
           <div className="navbar-nav">
             <Link className="nav-link" to="/posts">Posts</Link>
             <Link className="nav-link" to="/posts/1">Example</Link>
+            <button
+              type="button"
+              className="nav-link"
+              onClick={logoutHandler}
+            >
+              LogOut
+
+            </button>
           </div>
         </div>
       </div>
