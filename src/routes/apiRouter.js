@@ -41,12 +41,25 @@ router.post('/users', async (req, res) => {
   const [currentUser, created] = await User.findOrCreate({
     where: {
       username: req.body.username,
-      hashpass,
+    },
+    defaults: {
+      hashpass, // Убираем в defaults, производим сравнение через bcrypt.compare
     },
   });
-  req.session.username = currentUser.username; // Сохраняем в сессию какую-то информацию и актвиируем её
-  req.session.userId = currentUser.id;
-  res.json({ username: currentUser.username });
+  if (created) {
+    req.session.username = currentUser.username; // Сохраняем в сессию какую-то информацию и актвиируем её
+    req.session.userId = currentUser.id;
+    res.json({ username: currentUser.username, id: currentUser.id });
+  } else {
+    const passwordCheck = await bcrypt.compare(req.body.password, currentUser.hashpass);
+    if (!created && !passwordCheck) {
+      res.json({ });
+    } else {
+      req.session.username = currentUser.username; // Сохраняем в сессию какую-то информацию и актвиируем её
+      req.session.userId = currentUser.id;
+      res.json({ username: currentUser.username, id: currentUser.id });
+    }
+  }
 });
 
 router.get('/logout', (req, res) => {

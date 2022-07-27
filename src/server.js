@@ -2,10 +2,11 @@ import express from 'express';
 import morgan from 'morgan';
 import session from 'express-session';
 import store from 'session-file-store';
+import cors from 'cors';
 import indexRouter from './routes/indexRouter';
 import apiRouter from './routes/apiRouter';
 import postsRouter from './routes/postsRouter';
-import authCheck from './middlewares/authCheck';
+import authCheck from './middlewares/authCheck'; // закоментим authCheck
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,7 @@ app.use(express.static('public'));
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 const sessionConfig = {
   name: 'user_sid', 				// Имя куки для хранения id сессии. По умолчанию - connect.sid
@@ -31,11 +33,11 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 
 app.use('/', indexRouter);
+app.use('/api/v1', apiRouter);
 
-app.use(authCheck);
+app.use(authCheck); // Нужно после /api/v1, иначе регистрация не пройдёт
 
 app.use('/posts', postsRouter);
-app.use('/api/v1', apiRouter);
 
 app.listen(PORT, () => {
   console.log(`App has started on port ${PORT}`);

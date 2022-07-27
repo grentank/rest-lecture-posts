@@ -9,9 +9,9 @@ import PrivateRoutes from './reactRouting/PrivateRoutes';
 import PublicRoutes from './reactRouting/PublicRoutes';
 
 export default function App({ usernameSession }) {
-  const [authUser, setAuthUser] = useState(usernameSession);
+  const [authUser, setAuthUser] = useState(usernameSession); // authUser -> object -> {username: ...}
   const logoutHandler = () => {
-    setAuthUser(null);
+    setAuthUser({}); // Чиним logout -> setAuthUser({})
     axios.get('/api/v1/logout').then(() => {});
   };
   return (
@@ -19,7 +19,7 @@ export default function App({ usernameSession }) {
       <NavBar logoutHandler={logoutHandler} />
       {' '}
       {/* Раньше был Routing един для всех, тепер он разбит на два, в заисимости от авторизации */}
-      {authUser ? <PrivateRoutes authUser={authUser} setAuthUser={setAuthUser} />
+      {authUser.username ? <PrivateRoutes authUser={authUser} setAuthUser={setAuthUser} /> // authUser -> object, authUser.username
         : <PublicRoutes authUser={authUser} setAuthUser={setAuthUser} /> }
     </div>
   );

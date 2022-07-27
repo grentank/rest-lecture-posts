@@ -3,10 +3,11 @@ import LogInForm from './authForms/LogInForm';
 import SignUpForm from './authForms/SignUpForm';
 
 export default function Home({ setAuthUser, authUser }) {
+  console.log('AUTHUSER IN HOME:', authUser);
   return (
     <>
       {' '}
-      {authUser ? `Hello, ${authUser.username}`
+      {authUser.username ? `Hello, ${authUser.username}` // Нужно проверять наличие username, то есть authUser.username ?
         : (
           <>
             <nav>
